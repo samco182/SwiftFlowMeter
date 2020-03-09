@@ -3,7 +3,7 @@ import SwiftFlowMeter
 
 let sensorCharcteristic = SensorCharacteristic(kFactor: 10, modifier: .negative(4))
 let meter = SwiftFlowMeter(pinName: .P27, pulseCharacteristic: sensorCharcteristic)
-meter.readFlowrate { flowRate in
+meter.readFlowRate { flowRate in
     print("FLOW RATE: \(flowRate.value) l/min")
 }
 
