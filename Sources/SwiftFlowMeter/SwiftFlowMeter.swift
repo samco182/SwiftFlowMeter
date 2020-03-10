@@ -15,10 +15,16 @@ import Foundation
 import SwiftyGPIO
 
 public class SwiftFlowMeter {
-    public enum State {
+    // MARK: Nested Types
+    enum State {
         case idle
         case available
         case queuedWork
+    }
+    
+    enum Constants {
+        static let oneSecond: TimeInterval = 1
+        static let oneMinuteInSeconds: TimeInterval = 60
     }
     
     // MARK: Variables Declaration
@@ -68,7 +74,7 @@ public class SwiftFlowMeter {
     /// Reads the sensor's current flow rate and reports it back every second.
     /// - Parameter onCalculation: The closure to be executed every second the flow rate is calculated
     public func readFlowRate(onCalculation: ((FlowRate) -> Void)? = nil) {
-        self.onFlowRateCalculation = onCalculation
+        onFlowRateCalculation = onCalculation
         
         flowRateCalculationWorkItem = DispatchWorkItem { [weak self] in
             guard let self = self else { return }
