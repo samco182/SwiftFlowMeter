@@ -82,9 +82,20 @@ public class SwiftFlowMeter {
         state = .queuedWork
     }
     
+    /// Reads the sensor's total calculated flow during the specified time.
     /// - Parameters:
+    ///   - timePeriod: The time period to calculate the total flow from
+    ///   - onCalculation: The closure to be executed whenever the total flow is calculated
+    public func readTotalFlow(every timePeriod: NotificationPeriod, onCalculation: ((Double) -> Void)? = nil) {
+        readFlowRate { [weak self] flowRate in
             guard let self = self else { return }
             
+            self.flowRateHistory.append(flowRate)
+            
+            if self.flowRateHistory.count == timePeriod.seconds.intValue {
+                let totalFlow = self.flowRateHistory.map({ ($0.value / Constants.oneMinuteInSeconds) * Constants.oneSecond }).reduce(0, +)
+                self.flowRateHistory = []
+                onCalculation?(totalFlow)
             }
         }
     }
