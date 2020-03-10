@@ -100,6 +100,17 @@ public class SwiftFlowMeter {
         }
     }
     
+    /// Stops any of the ongoing readings.
+    public func stopReadings() {
+        flowRateCalculationWorkItem?.cancel()
+        flowRateCalculationWorkItem = nil
+        onFlowRateCalculation = nil
+        pulseCount = 0
+        currentFlowRate = FlowRate(pulses: pulseCount, using: pulseCharacteristic)
+        flowRateHistory = []
+        state = .idle
+    }
+    
     // MARK: Private Methods
     private func configurePin() {
         gpio.direction = .IN
