@@ -28,7 +28,7 @@ public class SwiftFlowMeter {
     }
     
     // MARK: Variables Declaration
-    private let gpio: GPIO
+    private let gpio: SysFSGPIO
     private let sensorQueue: DispatchQueue
     private let pulseCharacteristic: SensorCharacteristic
 
@@ -122,7 +122,7 @@ public class SwiftFlowMeter {
     
     // MARK: Private Methods
     private func configurePin() {
-        gpio.direction = .IN
+        gpio.direction = .input
         gpio.pull = .up
         
         gpio.onRaising { [weak self] _ in
