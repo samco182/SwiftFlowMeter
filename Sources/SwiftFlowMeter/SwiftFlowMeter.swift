@@ -36,7 +36,7 @@ public class SwiftFlowMeter {
     private var onFlowRateCalculation: ((FlowRate) -> Void)?
     private var pulseCount: Double
     private var currentFlowRate: FlowRate
-    private var flowRateHistory: [FlowRate]
+    private var flowRateHistory: Atomic<[FlowRate]>
     
     private var state: SwiftFlowMeter.State {
         didSet {
@@ -63,7 +63,7 @@ public class SwiftFlowMeter {
         self.pulseCharacteristic = pulseCharacteristic
         self.pulseCount = 0
         self.currentFlowRate = FlowRate(pulses: pulseCount, using: pulseCharacteristic)
-        self.flowRateHistory = []
+        self.flowRateHistory = Atomic([])
         self.state = .idle
         
         configurePin()
@@ -96,12 +96,12 @@ public class SwiftFlowMeter {
         readFlowRate { [weak self] flowRate in
             guard let self = self else { return }
             
-            self.flowRateHistory.append(flowRate)
+            self.flowRateHistory.mutate{( $0.append(flowRate) )}
             
-            if self.flowRateHistory.count == timePeriod.seconds.intValue {
-                let totalFlow = self.flowRateHistory.map({ ($0.value / Constants.oneMinuteInSeconds) * Constants.oneSecond }).reduce(0, +)
-                self.flowRateHistory = []
                 onCalculation?(totalFlow)
+            if self.flowRateHistory.value.count == timePeriod.seconds.intValue {
+                let totalFlow = self.flowRateHistory.value.map({ ($0.value / Constants.oneMinuteInSeconds) * Constants.oneSecond }).reduce(0, +)
+                self.flowRateHistory = Atomic([])
             }
         }
     }
@@ -113,7 +113,7 @@ public class SwiftFlowMeter {
         onFlowRateCalculation = nil
         pulseCount = 0
         currentFlowRate = FlowRate(pulses: pulseCount, using: pulseCharacteristic)
-        flowRateHistory = []
+        flowRateHistory = Atomic([])
         state = .idle
     }
     
