@@ -6,7 +6,7 @@ import SwiftFlowMeter
 let characteristic = SensorCharacteristic(kFactor: 10, modifier: .negative(4))
 
 // You can also initialize the object without the .RaspberryPi3 parameter. That is the default board.
-let meter = SwiftFlowMeter(for: .RaspberryPi3, pinName: .P27, pulseCharacteristic: characteristic)
+let meter = SwiftFlowMeter(for: .RaspberryPi3, pinName: .pin27, pulseCharacteristic: characteristic)
 
 meter.readTotalVolume(every: .minutes(1), onVolumeCalculation: { totalVolume in
     print("Total flow per minute: \(totalVolume)")
