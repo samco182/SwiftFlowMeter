@@ -58,7 +58,7 @@ Since Swift 5.x supports Swift Package Manager, you only need to add SwiftFlowMe
 let package = Package(
     name: "MyProject",
     dependencies: [
-        .package(url: "https://github.com/samco182/SwiftFlowMeter", from: "1.0.0"),
+        .package(url: "https://github.com/samco182/SwiftFlowMeter", .branch("next-release")),
     ]
     targets: [
         .target(
@@ -84,7 +84,7 @@ import SwiftFlowMeter
 let characteristic = SensorCharacteristic(kFactor: 10, modifier: .negative(4))
 
 // You can also initialize the object without the .RaspberryPi3 parameter, since that is the default board.
-let meter = SwiftFlowMeter(for: .RaspberryPi3, pinName: .P27, pulseCharacteristic: characteristic)
+let meter = SwiftFlowMeter(for: .RaspberryPi3, pinName: .pin27, pulseCharacteristic: characteristic)
 
 meter.readTotalVolume(every: .minutes(1), onVolumeCalculation: { totalVolume in
     print("Total flow per minute: \(totalVolume)")
